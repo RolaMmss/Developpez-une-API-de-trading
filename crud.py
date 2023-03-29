@@ -1,6 +1,6 @@
 import sqlite3
 
-# Ajout des 
+
 
 def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> None: 
     connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
@@ -17,3 +17,5 @@ def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> None:
 
 creer_utilisateur('Rola', 'rola@rola.com', 'azerty123','clerola')
 creer_utilisateur('Manu', 'manu@gmail.com', 'azerty1234','clemanu')
+#######################################################################################""
+
