@@ -127,6 +127,17 @@ async def get_actions() -> List[dict]:
     connexion.close()
 
     return actions
+#####################################################
+@app.get("/mesactions/")
+# async def get_mes_actions(monid:int):
+#     mes_actions = recup_sesactions(id)
+#     return mes_actions
+async def ses_actions(req: Request):
+    try:
+        mon_id= recup_id_w_jeton(req.headers["Authorization"])[0][0]
+        return recup_sesactions(mon_id)
+    except:
+        raise HTTPException(status_code=401, detail="Vous devez être identifiés pour accéder à cet endpoint") 
 ###################################################################
 @app.put("/vente/")
 async def update_vente(vente: Vente):

@@ -44,7 +44,7 @@ def creer_carnet_operations(user_id:int, action_id:int, prix_achat:int, date_ach
     connexion.commit()
 # qd il y a points d'interrogation >>>il va chercher la valeur qui sera donnée plus tard)cf : .format()
     connexion.close()
-
+# creer_carnet_operations(3,1,100,'20/3')
 
 
 def inserer_vente_operations(id:int, date_vente:str, prix_vente:int)->None:
@@ -65,6 +65,7 @@ def inserer_vente_operations(id:int, date_vente:str, prix_vente:int)->None:
     #                 UPDATE playlist
     #                     SET nom = ?
     #                     WHERE id= ?
+# inserer_vente_operations(3,"1/4",120)
 
 def update_token(id, token:str)->None:
     connexion = sqlite3.connect("bdd.db")
@@ -171,4 +172,17 @@ def suppr_action(entreprise:str) ->None:
                         """, (entreprise,))
     connexion.commit()
     connexion.close()
-    
+#############################################################
+def recup_sesactions(mon_id:int):
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+
+    curseur.execute("""
+                        SELECT action.entreprise, carnet_operation.prix_achat, carnet_operation.date_achat
+                        FROM carnet_operation
+                        INNER JOIN action ON carnet_operation.action_id=action.id
+                        WHERE action_id =?
+
+                        """,(mon_id,))
+    rslt=curseur.fetchall()
+    return rslt
