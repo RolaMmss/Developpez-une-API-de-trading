@@ -9,7 +9,7 @@ def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> int:
 
     curseur.execute(""" 
         INSERT INTO utilisateur 
-            VALUES (NULL, ?, ?, ?, ?)           
+            VALUES (NULL, ?, ?, 1, ?, ?)           
     """, (nom,email,mdp,cle_jwt))        # VALUES (NULL, 'Rola', 'rola@rola.com', 'azerty123')
     connexion.commit()
 

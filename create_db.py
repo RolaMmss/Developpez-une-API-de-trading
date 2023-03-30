@@ -6,11 +6,12 @@ curseur = connexion.cursor() #SQL.sh pour apprender SQL
 #####################################################
 curseur.execute(""" 
        CREATE TABLE IF NOT EXISTS utilisateur(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nom TEXT NOT NULL,
-            email TEXT NOT NULL,
-            mdp TEXT NOT NULL,
-            cle_jwt TEXT NOT NULL
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          nom TEXT NOT NULL,
+          email TEXT NOT NULL,
+          est_actif BOOLEAN NOT NULL,
+          mdp TEXT NOT NULL,
+          cle_jwt TEXT NOT NULL
             )
 """)
 connexion.commit()
