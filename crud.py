@@ -1,19 +1,20 @@
 import sqlite3
+import datetime
 
 
+# Ajout d'éléments dans la BDD
 
-def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> int: 
+def creer_utilisateur(nom:str, email:str, mdp:str, jwt:str) -> int: 
     connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
-
     curseur = connexion.cursor() #SQL.sh pour apprender SQL
-
     curseur.execute(""" 
         INSERT INTO utilisateur 
-            VALUES (NULL, ?, ?, 1, ?, ?)           
-    """, (nom,email,mdp,cle_jwt))        # VALUES (NULL, 'Rola', 'rola@rola.com', 'azerty123')
+        VALUES (NULL, ?, ?, ?, ?)           
+        """, (nom, email, mdp, jwt))        # VALUES (NULL, 'Rola', 'rola@rola.com', 'azerty123')
+    id_user = curseur.lastrowid
     connexion.commit()
-
     connexion.close()
+    return id_user
 
 
 
@@ -64,7 +65,18 @@ def inserer_vente_operations(id:int, date_vente:str, prix_vente:int)->None:
     #                 UPDATE playlist
     #                     SET nom = ?
     #                     WHERE id= ?
-                 
+
+def update_token(id, token:str)->None:
+    connexion = sqlite3.connect("bdd.db")
+    curseur = connexion.cursor()
+    curseur.execute("""
+                    UPDATE utilisateur
+                        SET jwt = ?
+                        WHERE id=?
+                    """,(token, id))
+    connexion.commit()
+    connexion.close()
+    
     
 def creer_action(entreprise:str, prix:int) -> None:
     connexion = sqlite3.connect("bdd.db")
@@ -77,6 +89,7 @@ def creer_action(entreprise:str, prix:int) -> None:
     connexion.commit()
 # qd il y a points d'interrogation >>>il va chercher la valeur qui sera donnée plus tard)cf : .format()
     connexion.close()
+# creer_action('Porsch',70000)
     
 def modifier_carnet_operations(user_id:int, action_id:int, prix_achat:int, date_achat:str, prix_vente:int, date_vente:str) -> None:
     connexion = sqlite3.connect("bdd.db")
@@ -92,12 +105,12 @@ def modifier_carnet_operations(user_id:int, action_id:int, prix_achat:int, date_
  
  #### trouver id à partir mail####
  
-def recup_id_avec_mail(email:str):
+def recup_user_avec_mail(email:str):
     connexion=sqlite3.connect('bdd.db')
     curseur= connexion.cursor()
         
     curseur.execute("""
-                        SELECT id
+                        SELECT *
                         FROM utilisateur
                         WHERE email= ?
                         """, (email,))
@@ -110,7 +123,7 @@ def recup_jeton_w_mail_mdp(email:str, mdp:str ):
     curseur= connexion.cursor()
         
     curseur.execute("""
-                        SELECT cle_jwt
+                        SELECT jwt
                         FROM utilisateur
                         WHERE email= ?
                         AND   mdp=?
@@ -120,15 +133,15 @@ def recup_jeton_w_mail_mdp(email:str, mdp:str ):
 
                                 ### trouver id à partir jeton  ####
 
-def recup_id_w_jeton(cle_jwt:str ):
+def recup_id_w_jeton(jwt:str ):
     connexion=sqlite3.connect('bdd.db')
     curseur= connexion.cursor()
         
     curseur.execute("""
                         SELECT id
                         FROM utilisateur
-                        WHERE cle_jwt= ?
-                        """, (cle_jwt,))
+                        WHERE jwt= ?
+                        """, (jwt,))
     rslt=curseur.fetchall()
     return rslt
 

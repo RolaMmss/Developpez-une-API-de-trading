@@ -6,6 +6,7 @@ import crud
 from crud import *
 from jose import jwt
 import hashlib
+from typing import List
 
 # pip install "python-jose[cryptography]"
 # pip install "passlib[bcrypt]"
@@ -40,6 +41,15 @@ class Operation(BaseModel):
     action_id: int
     prix_achat: int
     date_achat: str
+
+class Action(BaseModel):
+    entreprise: int
+    prix: int
+
+class Vente(BaseModel):
+    id: int
+    date_vente: str
+    prix_vente: int
     
 ######################################################""    
 app = FastAPI()
@@ -49,10 +59,10 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
+###################################################
 @app.post("/api/auth/inscription")
 async def inscription(user:UserRegister):
-    if len(crud.get_users_by_mail(user.email)) > 0:
+    if len(crud.recup_user_avec_mail(user.email)) > 0:
         raise HTTPException(status_code=403, detail="L'email fourni possède déjà un compte")
     else:
         id_user = crud.creer_utilisateur(user.nom, user.email, hasher_mdp(user.mdp), None)
@@ -63,26 +73,75 @@ async def inscription(user:UserRegister):
         }, SECRET_KEY, algorithm=ALGORITHM)
         crud.update_token(id_user, token)
         return {"token" : token}
-    
+####################################################""   
 @app.post("/api/auth/token")
 async def login_token(user:UserLogin):
-    resultat = crud.obtenir_jwt_depuis_email_mdp(user.email, hasher_mdp(user.mdp))
+    resultat = crud.recup_jeton_w_mail_mdp(user.email, hasher_mdp(user.mdp))
     if resultat is None:
         raise HTTPException(status_code=401, detail="Login ou mot de passe invalide")
     else:
         return {"token":resultat[0]}
+################################################
 
+# @app.get("/test")
+# async def test():
+#     return {"message": "Test"}
 
-@app.get("/test")
-async def test():
-    return {"message": "Test"}
-
-@app.get("/suivre")
-async def test():
-    liste = [ i for i in range(100) if i%5==0]
-    return {"liste des multiples de 5": liste}
+# @app.get("/suivre")
+# async def test():
+#     liste = [ i for i in range(100) if i%5==0]
+#     return {"liste des multiples de 5": liste}
 
 @app.post("/carnet_operations/")
-async def create_operation(op = Operation):
-        creer_carnet_operations(op.user_id, op.action_id, op.prix_achat, op.date_achat)
-        return {"message": "Opération créée avec succès"}
+async def creer_carnet_operations(op: Operation):
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+    
+    curseur.execute("""
+                     INSERT INTO carnet_operation
+                        VALUES ( NULL,?, ?, ?, ?, NULL, NULL)   
+                    """, (op.user_id, op.action_id, op.prix_achat, op.date_achat))
+    
+    connexion.commit()
+    connexion.close()
+    
+    return {"message": "Carnet d'operations created successfully!"}
+#########################################################################"
+@app.get("/actions/")
+async def get_actions() -> List[dict]:
+    connexion = sqlite3.connect("bdd.db")
+    curseur = connexion.cursor()
+
+    curseur.execute("""
+                    SELECT * 
+                    FROM action
+                    """)
+
+    actions = []
+    for action in curseur.fetchall():
+        actions.append({
+            "id": action[0],
+            "entreprise": action[1],
+            "prix": action[2]
+        })
+    connexion.close()
+
+    return actions
+###################################################################
+@app.put("/vente/")
+async def update_vente(vente: Vente):
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+    
+    curseur.execute("""
+                    UPDATE carnet_operation
+                        SET date_vente= ?,
+                            prix_vente= ?
+                        WHERE id= ?
+                 
+                        """, (vente.date_vente, vente.prix_vente, vente.id))
+    
+    connexion.commit()
+    connexion.close()
+    
+    return {"message": "Vente created successfully!"}
