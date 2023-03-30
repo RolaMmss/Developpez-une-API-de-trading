@@ -2,7 +2,7 @@ import sqlite3
 
 
 
-def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> None: 
+def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> int: 
     connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
 
     curseur = connexion.cursor() #SQL.sh pour apprender SQL
@@ -15,8 +15,7 @@ def creer_utilisateur(nom:str, email:str, mdp:str, cle_jwt:str) -> None:
 
     connexion.close()
 
-creer_utilisateur('Rola', 'rola@rola.com', 'azerty123','clerola')
-creer_utilisateur('Manu', 'manu@gmail.com', 'azerty1234','clemanu')
+
 
 
 def creer_asso_suivi_suiveur(suivi:int, suiveur:int) -> None:
