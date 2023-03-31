@@ -59,4 +59,23 @@ from crud import *
 
 # modif_valeur_action()
 
-modif_valeur_action('Toyota', 6000)
+# modif_valeur_action('Toyota', 6000)
+supp_action('Toyota')
+
+
+
+
+# class Deleteaction(BaseModel):
+#     entreprise:str
+# def  supp_action(entreprise:Deleteaction) ->None:
+#     connexion=sqlite3.connect('bdd.db')
+#     curseur= connexion.cursor()
+    
+#     curseur.execute("""
+#                     DELETE 
+#                         FROM action
+#                         WHERE entreprise=?
+                        
+#                         """, (entreprise.entreprise,))
+#     connexion.commit()
+#     connexion.close()
