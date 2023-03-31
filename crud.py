@@ -163,7 +163,7 @@ def delete_user(email:str) ->None:
 
 
 def suppr_action(entreprise:str) ->None:
-    connexion=sqlite3.connect('bdd_newest.db')
+    connexion=sqlite3.connect('bdd.db')
     curseur= connexion.cursor()
     
     curseur.execute("""
@@ -172,7 +172,7 @@ def suppr_action(entreprise:str) ->None:
                         """, (entreprise,))
     connexion.commit()
     connexion.close()
-#############################################################
+#############################################################récupérer ses actions
 def recup_sesactions(mon_id:int):
     connexion=sqlite3.connect('bdd.db')
     curseur= connexion.cursor()
@@ -186,3 +186,39 @@ def recup_sesactions(mon_id:int):
                         """,(mon_id,))
     rslt=curseur.fetchall()
     return rslt
+
+
+##########################################################récupérer actions des personnes suivies
+
+def actions_personnes_suivies(mon_id:int):
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+        
+    curseur.execute("""
+                        SELECT action.entreprise, carnet_operation.prix_achat, carnet_operation.date_achat
+                        FROM carnet_operation
+                        INNER JOIN action ON carnet_operation.action_id=action.id
+                        INNER JOIN asso_suivi_suiveur ON asso_suivi_suiveur.suiveur_id =carnet_operation.user_id 
+                        INNER JOIN utilisateur ON utilisateur.id= asso_suivi_suiveur.suiveur_id
+                        WHERE action_id =?
+                        
+                        
+                        """,(mon_id,))
+    rslt=curseur.fetchall()
+    return rslt
+
+#####################################################    arrêter de suivre
+
+def suppr_personnes_suivie(mon_id:int, email:str) ->None:
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+    
+    curseur.execute("""
+                    DELETE FROM asso_suivi_suiveur
+                        WHERE suivi_id = (SELECT id FROM utilisateur WHERE email = ?)
+                        AND suiveur_id = ?
+                        """, (email, mon_id))
+    
+    rslt=curseur.fetchall()
+    return rslt
+   
