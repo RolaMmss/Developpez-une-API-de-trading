@@ -198,13 +198,13 @@ def actions_personnes_suivies(mon_id:int):
                         SELECT action.entreprise, carnet_operation.prix_achat, carnet_operation.date_achat
                         FROM carnet_operation
                         INNER JOIN action ON carnet_operation.action_id=action.id
-                        INNER JOIN asso_suivi_suiveur ON asso_suivi_suiveur.suiveur_id =carnet_operation.user_id 
+                        INNER JOIN asso_suivi_suiveur ON asso_suivi_suiveur.suivi_id =carnet_operation.user_id 
                         INNER JOIN utilisateur ON utilisateur.id= asso_suivi_suiveur.suiveur_id
-                        WHERE action_id =?
+                        WHERE utilisateur.id=?
                         
                         
                         """,(mon_id,))
-    rslt=curseur.fetchall()
+    rslt=curseur.fetchone()
     return rslt
 
 #####################################################    arrêter de suivre
@@ -218,7 +218,8 @@ def suppr_personnes_suivie(mon_id:int, email:str) ->None:
                         WHERE suivi_id = (SELECT id FROM utilisateur WHERE email = ?)
                         AND suiveur_id = ?
                         """, (email, mon_id))
-    
-    rslt=curseur.fetchall()
-    return rslt
-   
+    connexion.commit()
+    connexion.close()
+    # rslt=curseur.fetchall()
+    # return rslt
+   #####################################################    permettre à un utilisateur de suivre un autre

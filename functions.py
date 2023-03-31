@@ -26,9 +26,8 @@ from crud import *
 # print(actions_personnes_suivies(2))
 
 # print(suppr_personnes_suivie(1,"ola@ola.fr"))
-resultats = suppr_personnes_suivie(1,"ola@ola.fr")
-if not resultats:
-    print("Aucun enregistrement n'a été supprimé.")
-else:
-    print(f"{len(resultats)} enregistrement(s) ont été supprimé(s).")
-print(suppr_action("Toyota"))
+# resultats = suppr_personnes_suivie(1,"ola@ola.fr")
+# if not resultats:
+#     print("Aucun enregistrement n'a été supprimé.")
+# else:
+suppr_action("Toyota")
