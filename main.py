@@ -51,6 +51,10 @@ class Vente(BaseModel):
     date_vente: str
     prix_vente: int
     
+    
+class Deleteaction(BaseModel):
+    entreprise:str
+    
 ######################################################""    
 app = FastAPI()
 #########################################################
@@ -160,6 +164,11 @@ async def update_vente(vente: Vente):
 
 ##################################################################
 
+
+
+
+###############################################################
+
 @app.get("/actions_suivies/")
 # async def get_mes_actions(monid:int):
 #     mes_actions = recup_sesactions(id)
@@ -177,3 +186,18 @@ async def ses_actions(req: Request):
     
 ##################################""
 
+@app.delete("/enlever_action/")
+
+
+def  supp_action(entreprise:Deleteaction) ->None:
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+    
+    curseur.execute("""
+                    DELETE 
+                        FROM action
+                        WHERE entreprise=?
+                        
+                        """, (entreprise.entreprise,))
+    connexion.commit()
+    connexion.close()

@@ -1,7 +1,18 @@
 import sqlite3
 import datetime
+from fastapi import FastAPI, HTTPException, Request, Depends
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
+import crud
+from crud import *
+from jose import jwt
+import hashlib
+from typing import List
 
 
+class Deleteaction(BaseModel):
+    entreprise:str
 # Ajout d'éléments dans la BDD
 
 def creer_utilisateur(nom:str, email:str, mdp:str, jwt:str) -> int: 
@@ -167,8 +178,10 @@ def suppr_action(entreprise:str) ->None:
     curseur= connexion.cursor()
     
     curseur.execute("""
-                    DELETE FROM action
-                        WHERE entreprise=?
+                    DELETE 
+                        FROM action
+                        WHERE id=(SELECT id FROM action WHERE entreprise=?)
+                        
                         """, (entreprise,))
     connexion.commit()
     connexion.close()
@@ -223,3 +236,58 @@ def suppr_personnes_suivie(mon_id:int, email:str) ->None:
     # rslt=curseur.fetchall()
     # return rslt
    #####################################################    permettre à un utilisateur de suivre un autre
+   
+def modif_valeur_action(entreprise:str, nveau_prix:int)->None:
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+
+    curseur.execute("""
+                    UPDATE action
+                        SET entreprise= ?,
+                            prix= ?
+                        
+                    
+                        """, (entreprise, nveau_prix))
+
+    connexion.commit()
+    connexion.close()
+    
+# def modif_valeur_action(entreprise: str, nveau_prix: int) -> None:
+#     connexion = sqlite3.connect('bdd.db')
+#     curseur = connexion.cursor()
+    
+#     # Check if a row with the specified entreprise already exists in the table
+#     curseur.execute("""
+#         SELECT COUNT(*) FROM action WHERE entreprise=?
+#     """, (entreprise,))
+    
+#     row_count = curseur.fetchone()[0]
+    
+#     if row_count == 0:
+#         # If no row exists, insert a new row with the specified values
+#         curseur.execute("""
+#             INSERT INTO action (entreprise, prix)
+#             VALUES (?, ?)
+#         """, (entreprise, nveau_prix))
+#     else:
+#         # If a row exists, update it with the new price value
+#         # curseur.execute("""
+#         #     UPDATE action SET prix=?
+#         #     WHERE entreprise=?
+#         # """, (nveau_prix, entreprise))
+#         pass
+#     connexion.commit()
+#     connexion.close()    
+    
+def  supp_action(entreprise:Deleteaction) ->None:
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+    
+    curseur.execute("""
+                    DELETE 
+                        FROM action
+                        WHERE entreprise=?
+                        
+                        """, (entreprise.entreprise,))
+    connexion.commit()
+    connexion.close()

@@ -1,6 +1,6 @@
 import sqlite3
 
-connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+connexion = sqlite3.connect("bdde.db")   #Se connecter à la base de données
 
 curseur = connexion.cursor() #SQL.sh pour apprender SQL
 #####################################################

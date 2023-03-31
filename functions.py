@@ -1,4 +1,4 @@
-
+from pydantic import BaseModel
 
 from crud import *
 
@@ -22,7 +22,7 @@ from crud import *
 
 # print(delete_user("ola@ola.fr"))
 
-# creer_action('  Toyota',23000)
+# creer_action('Toyota',23000)
 # print(actions_personnes_suivies(2))
 
 # print(suppr_personnes_suivie(1,"ola@ola.fr"))
@@ -30,4 +30,33 @@ from crud import *
 # if not resultats:
 #     print("Aucun enregistrement n'a été supprimé.")
 # else:
-suppr_action("Toyota")
+
+# def suppr_actions(entreprise:str) -> None:
+#     try:
+#         connexion = sqlite3.connect('bdd.db')
+#         curseur = connexion.cursor()
+
+#         curseur.execute("""
+#                         DELETE FROM action
+#                             WHERE entreprise=?
+#                             AND id= *
+#                             """, (entreprise,))
+
+#         connexion.commit()
+#         connexion.close()
+#     except Exception as e:
+#         print("Error deleting company:", e)
+        
+# suppr_action("Toyota")
+# # delete_user("ola@ola.fr")
+
+# # def modif_valeur_action("Alpha Romeo", )
+    
+
+    
+    
+# supp_action("Toyota")
+
+# modif_valeur_action()
+
+modif_valeur_action('Toyota', 6000)
