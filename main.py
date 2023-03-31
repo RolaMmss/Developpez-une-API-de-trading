@@ -25,7 +25,7 @@ def decoder_token(token:str)->dict:
 def verifier_token(req: Request):
     token = req.headers["Authorization"]
 
-
+############################################################################
 # Classes contenu
 class UserRegister(BaseModel):
     nom:str
@@ -91,7 +91,7 @@ async def login_token(user:UserLogin):
 # async def test():
 #     liste = [ i for i in range(100) if i%5==0]
 #     return {"liste des multiples de 5": liste}
-
+#######################################################
 @app.post("/carnet_operations/")
 async def creer_carnet_operations(op: Operation):
     connexion=sqlite3.connect('bdd.db')
