@@ -156,3 +156,24 @@ async def update_vente(vente: Vente):
     connexion.close()
     
     return {"message": "Vente created successfully!"}
+
+
+##################################################################
+
+@app.get("/actions_suivies/")
+# async def get_mes_actions(monid:int):
+#     mes_actions = recup_sesactions(id)
+#     return mes_actions
+    
+async def ses_actions(req: Request):
+    connexion=sqlite3.connect('bdd.db')
+    curseur= connexion.cursor()
+    try:
+        mon_id= recup_id_w_jeton(req.headers["Authorization"])[0][0]
+        return actions_personnes_suivies(mon_id)
+    except:
+        raise HTTPException(status_code=401, detail="Vous devez être identifiés pour accéder à cet endpoint") 
+    
+    
+##################################""
+
